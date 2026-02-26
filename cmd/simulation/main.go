@@ -19,26 +19,22 @@ func main() {
 
 	reader := bufio.NewReader(os.Stdin)
 
-	// 1. Меню выбора режима
-	fmt.Println("🚦 Симулятор светофора")
-	fmt.Println("Выберите режим работы:")
-	fmt.Println("  0 - Фиксированный цикл (FIXED)")
-	fmt.Println("  1 - Адаптивное управление (ADAPTIVE)")
-	fmt.Print("Ваш выбор (по умолчанию 0): ")
+	fmt.Println("🚦 Traffic Light Simulation")
+	fmt.Println("Time to select the mode.")
+	fmt.Println("  0 - Cycle (FIXED)")
+	fmt.Println("  1 - Adaptive Control (ADAPTIVE)")
+	fmt.Print("Your choice (0 by default): ")
 
-	// Читаем ввод до нажатия Enter
 	input, _ := reader.ReadString('\n')
-	// Обязательно убираем пробелы и символы переноса строки (\r\n или \n)
 	input = strings.TrimSpace(input)
 
-	// Определяем режим на основе ввода
 	var mode fsm.Mode
 	if input == "1" {
 		mode = fsm.ADAPTIVE
-		fmt.Println("✅ Выбран АДАПТИВНЫЙ режим.")
+		fmt.Println("✅ ADAPTIVE mode selected.")
 	} else {
 		mode = fsm.FIXED
-		fmt.Println("✅ Выбран ФИКСИРОВАННЫЙ режим.")
+		fmt.Println("✅ FIXED mode selected.")
 	}
 
 	fmt.Println("--------------------------------------------------")
@@ -62,7 +58,7 @@ func main() {
 	)
 
 	go trafficLight.Run(ctx)
-	go SpawnPedestrians(ctx, 20, intersection.PedestrianBtn)
+	go SpawnPedestrians(ctx, 10, intersection.PedestrianBtn)
 
 	fmt.Println(">>> Press [Enter] to stop <<<")
 
@@ -71,7 +67,6 @@ func main() {
 	fmt.Println("\nShut down..")
 	cancel()
 
-	// Даем горутинам миллисекунду на вывод прощальных сообщений в консоль
 	time.Sleep(100 * time.Millisecond)
 	fmt.Println("Shut down succeded")
 }
