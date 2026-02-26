@@ -58,7 +58,8 @@ func (i *IntersectionUno) Run(ctx context.Context) {
 	}
 }
 
-func (i *IntersectionUno) CheckAndResetPed() bool {
+
+func (i *IntersectionUno) GetPedStatus() bool {
 	i.mu.Lock()
 	defer i.mu.Unlock()
 
@@ -66,12 +67,7 @@ func (i *IntersectionUno) CheckAndResetPed() bool {
 		i.isPedestrianWaiting = false
 		return true
 	}
-
 	return false
-}
-
-func (i *IntersectionUno) GetPedStatus() bool {
-	return i.isPedestrianWaiting
 }
 
 func (i *IntersectionUno) GetSensorCnt(id int) int {
@@ -79,4 +75,33 @@ func (i *IntersectionUno) GetSensorCnt(id int) int {
 	defer i.mu.Unlock()
 
 	return i.sensors[id].carCnt
+}
+
+func (i *IntersectionUno) DequeueCars(sensorIDs []int, maxCars int) int {
+	i.mu.Lock()
+	defer i.mu.Unlock()
+
+	passedCount := 0
+	for _, id := range sensorIDs {
+		if i.sensors[id].carCnt > 0 {
+			if i.sensors[id].carCnt >= maxCars {
+				i.sensors[id].carCnt -= maxCars
+				passedCount += maxCars
+			} else {
+				passedCount += i.sensors[id].carCnt
+				i.sensors[id].carCnt = 0
+			}
+		}
+	}
+	return passedCount
+}
+
+func (i *IntersectionUno) GetAllSensorsCnt() int {
+	i.mu.Lock()
+	defer i.mu.Unlock()
+	total := 0
+	for _, s := range i.sensors {
+		total += s.carCnt
+	}
+	return total
 }

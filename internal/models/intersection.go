@@ -10,7 +10,8 @@ type Sensor struct {
 
 type IntersectionInterface interface {
 	Run(ctx context.Context)
-	CheckAndResetPed() bool
 	GetPedStatus() bool
 	GetSensorCnt(id int) int
+	GetAllSensorsCnt() int
+	DequeueCars(sensorIDs []int, maxCars int) int
 }

@@ -21,6 +21,7 @@ const (
 	EWY_LEFT
 
 	totalStates
+	PG
 	inital
 )
 
